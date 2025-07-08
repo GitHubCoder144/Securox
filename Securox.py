@@ -1,12 +1,38 @@
+import logging
+
 import psutil
 
 def cpu_percent():
     cpu_statistics = psutil.cpu_percent(interval=1)
     return cpu_statistics
 
+def cpu_alerts(cpu_statistics):
+    if cpu_statistics > 90:
+        logging.error("CPU USAGE ALERT: RED")
+    elif 60 <= cpu_statistics < 90:
+        logging.warning("CPU USAGE ALERT: ORANGE")
+    else:
+        logging.info("CPU USAGE NORMAL")
+
 def Network_usage():
     network_statistics = psutil.net_io_counters()
     return network_statistics
+
+def Memory_usage():
+    memory_stats = psutil.virtual_memory()
+    return memory_stats
+
+def memory_alerts(memory_stats):
+    if memory_stats.percent >= 90:
+        logging.error("Memory usage alert: Red")
+    elif 60 <= memory_stats.percent < 90:
+        logging.warning("Memory usage alert: Orange")
+    else:
+        logging.info("Memory Usage Normal")
+
+def disk_usage():
+    disk_stats = psutil.disk_usage('/')
+    return disk_stats
 
 
 def main():
