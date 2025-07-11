@@ -119,7 +119,8 @@ def main():
         print("3. Monitor Disk Usage")
         print("4. Monitor Network Usage")
         print("5. Monitor ALL Components")
-        print("THANK YOU FOR USING SECUROX --> CTRL + C To Exit")
+        print("6. Exit")
+        print("THANK YOU FOR USING SECUROX")
 
         choice = input("Enter your choice (1-6): ")
 
@@ -135,6 +136,7 @@ def main():
             all_data()
         elif choice == "6":
             print("Thank you for using Securox! - refer to /logs in /Securox for system issues")
+            break
         else:
             print("Error - Please try again")
 
@@ -145,7 +147,7 @@ def cpu_data():
             print(f"CPU USAGE:  {cpu_statistics}%")
             cpu_alerts(cpu_statistics)
             time.sleep(1)
-            print("Press Ctrl + C to exit to Main Menu")
+            print("Press Ctrl + C to exit to Main Menu", flush=True)
 
     except KeyboardInterrupt:
         print("Saved Log Report --> Returning to main menu")
@@ -157,7 +159,7 @@ def memory_data():
             print(f"Memory Usage:  {memory_statistics.percent}%")
             memory_alerts(memory_statistics)
             time.sleep(1)
-            print("Press Ctrl + C to exit to main menu")
+            print("Press Ctrl + C to exit to main menu", flush=True)
 
     except KeyboardInterrupt:
         print("Saved Log Report --> Returning to main menu")
@@ -169,7 +171,7 @@ def disk_data():
             print(f"Disk Usage:  {disk_statistic.percent}%")
             disk_alerts(disk_statistic)
             time.sleep(1)
-            print("Press Ctrl + C to exit to main menu")
+            print("Press Ctrl + C to exit to main menu", flush=True)
 
     except KeyboardInterrupt:
         print("Saved Log Report --> Returning to main menu")
@@ -188,7 +190,7 @@ def network_data():
             print(f"OUTGOING PACKAGES DROPPED:  {network_statistic.dropout}")
             network_alerts(network_statistic)
             time.sleep(1)
-            print("Press Ctrl + C to exit to main menu")
+            print("Press Ctrl + C to exit to main menu", flush=True)
 
     except KeyboardInterrupt:
         print("Saved Log Report --> Returning to main menu")
@@ -219,6 +221,7 @@ def all_data():
                 print(f"OUTGOING PACKAGES DROPPED:  {network_statistics.dropout}")
                 network_alerts(network_statistics)
                 time.sleep(1)
+                print("Press Ctrl + C to exit to main menu", flush=True)
 
 
         except KeyboardInterrupt:
