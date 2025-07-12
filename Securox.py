@@ -2,9 +2,20 @@ import logging
 import time
 import psutil
 import os
+from datetime import datetime
 
 from colorama import init, Fore, Style
 init(autoreset=True)
+
+
+timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+print(timestamp)
+
+alerts = {
+        "red": [],
+        "yellow": [],
+        "green": []
+    }
 
 def cpu_percent():
     cpu_statistics = psutil.cpu_percent(interval=1)
@@ -12,11 +23,17 @@ def cpu_percent():
 
 def cpu_alerts(cpu_statistics):
     if cpu_statistics > 90:
+        alerts["red"].append("cpu usage exceeds 90%")
+        print(Fore.RED + "Disk usage alert: Red" + Style.RESET_ALL)
         logging.error("CPU USAGE ALERT: RED")
     elif 60 <= cpu_statistics < 90:
-        logging.warning("CPU USAGE ALERT: ORANGE")
+        alerts["yellow"].append("CPU usage between 60% and 90%")
+        logging.warning("CPU USAGE ALERT: YELLOW")
+        print(Fore.YELLOW + "Disk usage alert: Yellow" + Style.RESET_ALL)
     else:
+        alerts["green"].append("CPU USAGE NORMAL")
         logging.info("CPU USAGE NORMAL")
+        print(Fore.GREEN + "CPU USAGE NORMAL" + Style.RESET_ALL)
 
 
 def memory_usage():
@@ -25,11 +42,17 @@ def memory_usage():
 
 def memory_alerts(memory_statistic):
     if memory_statistic.percent >= 90:
+        alerts["red"].append("Memory usage alert: RED")
         logging.error("Memory usage alert: Red")
+        print(Fore.RED + "Memory usage alert: Red" + Style.RESET_ALL)
     elif 60 <= memory_statistic.percent < 90:
-        logging.warning("Memory usage alert: Orange")
+        alerts["yellow"].append("Memory usage alert: YELLOW")
+        logging.warning("Memory usage alert: Yellow")
+        print(Fore.YELLOW + "Memory usage alert: Yellow" + Style.RESET_ALL)
     else:
+        alerts["green"].append("Memory USAGE NORMAL")
         logging.info("Memory Usage Normal")
+        print(Fore.GREEN + "Memory usage normal" + Style.RESET_ALL)
 
 def disk_usage():
     disk_statistic = psutil.disk_usage('/')
@@ -37,14 +60,17 @@ def disk_usage():
 
 def disk_alerts(disk_statistic):
     if disk_statistic.percent >= 90:
+        alerts["red"].append("Memory usage alert: RED")
         logging.error("Disk usage alert: Red")
         print(Fore.RED + "Disk usage alert: Red" + Style.RESET_ALL)
     elif 60 <= disk_statistic.percent < 90:
+        alerts["yellow"].append("Memory usage alert: YELLOW")
         logging.warning("Disk usage alert: Yellow")
         print(Fore.YELLOW + "Disk usage alert: Yellow" + Style.RESET_ALL)
     else:
+        alerts["green"].append("DISK USAGE NORMAL")
         logging.info("Disk usage normal")
-        print(Fore.WHITE + "Disk usage normal" + Style.RESET_ALL)
+        print(Fore.GREEN + "Disk usage normal" + Style.RESET_ALL)
 
 
 
@@ -54,14 +80,40 @@ def network_usage():
 
 def network_alerts(network_statistics):
     if network_statistics.errin > 0 or network_statistics.errout > 0:
-        logging.error("Network USAGE ALERT: PACKET ERRORS DETECTED")
-        print(Fore.RED + "Network USAGE ALERT: PACKET ERRORS DETECTED" + Style.RESET_ALL)
+        alerts["red"].append("Network usage alert: RED")
+        logging.error("NETWORK USAGE ALERT: PACKET ERRORS DETECTED")
+        print(Fore.RED + "NETWORK USAGE ALERT: PACKET ERRORS DETECTED" + Style.RESET_ALL)
+
     elif network_statistics.dropin > 0 or network_statistics.dropout > 0:
+        alerts["yellow"].append("Network usage alert: YELLOW")
         logging.warning("Network USAGE ALERT: DROPPED PACKAGES DETECTED")
         print(Fore.YELLOW + "Network USAGE ALERT: DROPPED PACKAGES DETECTED" + Style.RESET_ALL)
     else:
+        alerts["green"].append("Network usage normal")
         logging.info("Network USAGE NORMAL")
-        print(Fore.WHITE + "Network USAGE NORMAL" + Style.RESET_ALL)
+        print(Fore.GREEN + "Network USAGE NORMAL" + Style.RESET_ALL)
+
+def initialization():
+    components = ["cpu", "memory", "disk", "network"]
+    severities = ["red", "yellow", "green"]
+
+    for component in components:
+        for severity in severities:
+            path = f"Securox/logs/{component}/{severity}"
+            os.makedirs(path, exist_ok=True)
+
+def filealerts(component_name):
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+
+    for severity, messages in alerts.items():
+        if messages:
+            filename = f"{component_name}_{severity}_{timestamp}.txt"
+            file_path = f"Securox/logs/{component_name}/{severity}/{filename}"
+            with open(file_path, "w") as file:
+                for message in messages:
+                    file.write(message)
+
+
 
 #def main():
 #    cpu_statistics = cpu_percent()
@@ -110,8 +162,8 @@ def network_alerts(network_statistics):
 
 #            time.sleep(1)
 
-
 def main():
+    initialization()
     print("================SECUROX MACOS MONITER/LOGGER================")
     while True:
         print("1. Monitor CPU Only")
@@ -150,6 +202,7 @@ def cpu_data():
             print("Press Ctrl + C to exit to Main Menu", flush=True)
 
     except KeyboardInterrupt:
+        filealerts("cpu")
         print("Saved Log Report --> Returning to main menu")
 
 def memory_data():
@@ -162,6 +215,7 @@ def memory_data():
             print("Press Ctrl + C to exit to main menu", flush=True)
 
     except KeyboardInterrupt:
+        filealerts("memory")
         print("Saved Log Report --> Returning to main menu")
 
 def disk_data():
@@ -174,6 +228,7 @@ def disk_data():
             print("Press Ctrl + C to exit to main menu", flush=True)
 
     except KeyboardInterrupt:
+        filealerts("disk")
         print("Saved Log Report --> Returning to main menu")
 
 def network_data():
@@ -193,6 +248,7 @@ def network_data():
             print("Press Ctrl + C to exit to main menu", flush=True)
 
     except KeyboardInterrupt:
+        filealerts("network")
         print("Saved Log Report --> Returning to main menu")
 
 def all_data():
@@ -225,6 +281,10 @@ def all_data():
 
 
         except KeyboardInterrupt:
+            filealerts("cpu")
+            filealerts("memory")
+            filealerts("disk")
+            filealerts("network")
             print("Saved Log Report --> Returning to main menu")
 
 
