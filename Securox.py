@@ -1,31 +1,56 @@
+# SECUROX - MACOS Monitering Tool
+#!/usr/bin/env python3
+# NESSESARY IMPORTS FOR TOOLS TO WORK:
+# Logging - need for alerts functions
 import logging
+# Time - needed for pauses between checks
 import time
+# pstuil - System Monitering APIs - stats for CPU, Memory, Disk, Network
 import psutil
+# OS - Needed for Directory Handling and Creation
 import os
+# datetime - needed to format timestamp with current time
 from datetime import datetime
 
+# Needed to color alerts for catagorization within terminal
 from colorama import init, Fore, Style
 init(autoreset=True)
-
+# Resets color after every print
 
 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# defined Time with current date and in format of Year/Month/Day
 print(timestamp)
 
+# alerts dictionary for color catagorization for alert methods
+# for - cpu_alerts , memory_alerts, disk_alerts, network_alerts
 alerts = {
         "red": [],
         "yellow": [],
         "green": []
     }
 
+# Prefered Structure for alerts methods:
+# If usage is Above or > 90% --> Red Alert
+# Else If usage is in between 60% to 90% --> Yellow Alert
+# Else --> Green Alert
+
+# cpu_precent - Function cpu_precent pulls CPU Stats every second
 def cpu_percent():
     cpu_statistics = psutil.cpu_percent(interval=1)
     return cpu_statistics
 
+# cpu_alerts - Function cpu_alerts takes cpu_statistics defined earlier
+# and catagorizes the alerts by severity (the highest being red and lowest being green)
 def cpu_alerts(cpu_statistics):
+        # 1. If The CPU Precent is above 90% --> severity level red
     if cpu_statistics > 90:
+        # 2. Gather the current date with global date format
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # 3. Apply Red From Alert Dictonary and attach Message with current time stamp
         alerts["red"].append(f"{now} - cpu usage exceeds 90%")
+        # 4. Print the whole Message in Red and Reset For next Reading
         print(Fore.RED + "CPU usage alert: Red" + Style.RESET_ALL)
+        # 5. Log the Error With the inputed message
         logging.error("CPU USAGE ALERT: RED")
     elif 60 <= cpu_statistics < 90:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -38,6 +63,8 @@ def cpu_alerts(cpu_statistics):
         logging.info("CPU USAGE NORMAL")
         print(Fore.GREEN + "CPU USAGE NORMAL" + Style.RESET_ALL)
 
+# memory_alert and memory_usage follows exact logic as cpu_precent and cpu_alerts
+# just with different components
 
 def memory_usage():
     memory_statistic = psutil.virtual_memory()
@@ -60,6 +87,9 @@ def memory_alerts(memory_statistic):
         logging.info("Memory Usage Normal")
         print(Fore.GREEN + "Memory usage normal" + Style.RESET_ALL)
 
+# disk_usage and disk_alerts follows exact logic as cpu_precent and cpu_alerts
+# just with different components
+
 def disk_usage():
     disk_statistic = psutil.disk_usage('/')
     return disk_statistic
@@ -81,7 +111,8 @@ def disk_alerts(disk_statistic):
         logging.info("Disk usage normal")
         print(Fore.GREEN + "Disk usage normal" + Style.RESET_ALL)
 
-
+# network_alert and network_usage follows exact logic as cpu_precent and cpu_alerts
+# just with different components
 
 def network_usage():
     network_statistics = psutil.net_io_counters()
@@ -105,6 +136,9 @@ def network_alerts(network_statistics):
         logging.info("Network USAGE NORMAL")
         print(Fore.GREEN + "Network USAGE NORMAL" + Style.RESET_ALL)
 
+# initilization- Function initilization is meant to run ONCE in the life of Securox primary
+# to set up Securox file system with the proper file path for proper logging
+
 def initialization():
     components = ["cpu", "memory", "disk", "network"]
     severities = ["red", "yellow", "green"]
@@ -114,15 +148,24 @@ def initialization():
             path = f"Securox/logs/{component}/{severity}"
             os.makedirs(path, exist_ok=True)
 
+# filealerts- function filealerts provides a way for the program to store saved memory during
+# a security monitering session into the appropriate file path based on component and severity
+
 def filealerts(component_name):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    # Took Imported OS and Added the First Part of Path: Both /Users/(Username) and /Desktop
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
+    # Second Part Of the Path /Securox and /Securox/logs
     base_path = os.path.join(desktop, "Securox", "logs")
     for severity, messages in alerts.items():
         if messages:
+            # Filename Standered for all Securox Messages
             filename = f"{component_name}_{severity}_{timestamp}.txt"
+            # file path Standered for Where Securox files should end up
             file_path = os.path.join(base_path, component_name, severity, filename)
+            # ensures path exists if function initilization didnt work
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            # writes messages by opening a file, writing alerts to that file, then wiped from memory
             with open(file_path, "w") as file:
                 for message in messages:
                     file.write(message)
@@ -181,6 +224,7 @@ def filealerts(component_name):
 
 def main():
     initialization()
+    # main UI --> what the person interacts with
     print("================SECUROX MACOS MONITER/LOGGER================")
     while True:
         print("1. Monitor CPU Only")
@@ -192,6 +236,7 @@ def main():
         print("THANK YOU FOR USING SECUROX")
 
         choice = input("Enter your choice (1-6): ")
+# Options and their outputs based on what number the person chooses
 
         if choice == "1":
             cpu_data()
@@ -210,6 +255,8 @@ def main():
             print("Error - Please try again")
 
 def cpu_data():
+    # cpu_data -- This function displays the cpu precent every one second
+    # until ctrl + c is pressed
     try:
         while True:
             cpu_statistics = cpu_percent()
@@ -223,6 +270,8 @@ def cpu_data():
         print("Saved Log Report --> Returning to main menu")
 
 def memory_data():
+    # memory_data -- This function displays the memory precent every one second
+    # until ctrl + c is pressed
     try:
         while True:
             memory_statistics = memory_usage()
@@ -236,6 +285,8 @@ def memory_data():
         print("Saved Log Report --> Returning to main menu")
 
 def disk_data():
+    # disk_data -- This function displays the precent of disk used every one second
+    # until ctrl + c is pressed
     try:
         while True:
             disk_statistic = disk_usage()
@@ -249,6 +300,8 @@ def disk_data():
         print("Saved Log Report --> Returning to main menu")
 
 def network_data():
+    # network_data -- This function unlike the other shows details on bytes and packets of a system
+    # until ctrl + c is pressed
     try:
         while True:
             network_statistic = network_usage()
@@ -269,6 +322,8 @@ def network_data():
         print("Saved Log Report --> Returning to main menu")
 
 def all_data():
+    # all_data -- This function displays everything (cpu,memory,disk, network) every one second
+    # until ctrl + c is pressed
         try:
             while True:
                 cpu_statistics = cpu_percent()
@@ -304,7 +359,7 @@ def all_data():
             filealerts("network")
             print("Saved Log Report --> Returning to main menu")
 
-
+# ONLY run the main function if Securox.py is being directly run on
 if __name__ == "__main__":
     main()
 
