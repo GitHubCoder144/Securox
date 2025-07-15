@@ -174,7 +174,7 @@ def filealerts(component_name):
                     alerts["green"].clear()
 
 
-
+# VERSION 1 - SECUROX ONLY SHOWS STATS - NO LIVE UPDATE
 #def main():
 #    cpu_statistics = cpu_percent()
 #    print(f"CPU USAGE:  {cpu_statistics}%")
@@ -192,6 +192,7 @@ def filealerts(component_name):
 #    print(f"INCOMING PACKAGES DROPPED:  {network_statistics.dropin}")
 #    print(f"OUTGOING PACKAGES DROPPED:  {network_statistics.dropout}")
 
+# VERSION TWO - SECUROX DOES LIVE UPDATE NOW
 #def main():
 #    try:
 #       while True:
@@ -224,7 +225,7 @@ def filealerts(component_name):
 
 def main():
     initialization()
-    # main UI --> what the person interacts with
+    # VERSION 3: main UI WITH LIVE UPDATE --> what the person interacts with
     print("================SECUROX MACOS MONITER/LOGGER================")
     while True:
         print("1. Monitor CPU Only")
