@@ -1,5 +1,11 @@
-# SECUROX - MACOS Monitering Tool
 #!/usr/bin/env python3
+
+# -------------------------------
+
+# Securox - macOS monitoring tool
+
+# -------------------------------
+
 # NESSESARY IMPORTS FOR TOOLS TO WORK:
 # Logging - need for alerts functions
 import logging
