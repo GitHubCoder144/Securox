@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
 
-# -------------------------------
-
 # Securox - macOS monitoring tool
 
 # -------------------------------
 
-# NESSESARY IMPORTS FOR TOOLS TO WORK:
-# Logging - need for alerts functions
-import logging
-# Time - needed for pauses between checks
-import time
-# pstuil - System Monitering APIs - stats for CPU, Memory, Disk, Network
-import psutil
-# OS - Needed for Directory Handling and Creation
-import os
-# datetime - needed to format timestamp with current time
-from datetime import datetime
+import logging  # for alerts functions
+import os  # for directory handling and creation
+import time  # for pauses between checks
+from datetime import datetime  # to format timestamp with current time
 
-# Needed to color alerts for catagorization within terminal
-from colorama import init, Fore, Style
+import psutil  # system monitoring APIs - stats for CPU, memory, disk, network
+from colorama import Fore, Style, init  # to color alerts for categorization
+
+# -------------------------------
+
 init(autoreset=True)
 # Resets color after every print
 
