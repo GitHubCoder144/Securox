@@ -23,26 +23,25 @@ print(timestamp)
 
 # alerts dictionary for color catagorization for alert methods
 # for - cpu_alerts , memory_alerts, disk_alerts, network_alerts
-alerts = {
-        "red": [],
-        "yellow": [],
-        "green": []
-    }
+alerts = {"red": [], "yellow": [], "green": []}
 
 # Prefered Structure for alerts methods:
 # If usage is Above or > 90% --> Red Alert
 # Else If usage is in between 60% to 90% --> Yellow Alert
 # Else --> Green Alert
 
+
 # cpu_precent - Function cpu_precent pulls CPU Stats every second
 def cpu_percent():
     cpu_statistics = psutil.cpu_percent(interval=1)
     return cpu_statistics
 
+
 # cpu_alerts - Function cpu_alerts takes cpu_statistics defined earlier
 # and catagorizes the alerts by severity (the highest being red and lowest being green)
 def cpu_alerts(cpu_statistics):
-        # 1. If The CPU Precent is above 90% --> severity level red
+
+    # threshhold for severity level red
     if cpu_statistics > 90:
         # 2. Gather the current date with global date format
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -63,12 +62,15 @@ def cpu_alerts(cpu_statistics):
         logging.info("CPU USAGE NORMAL")
         print(Fore.GREEN + "CPU USAGE NORMAL" + Style.RESET_ALL)
 
+
 # memory_alert and memory_usage follows exact logic as cpu_precent and cpu_alerts
 # just with different components
+
 
 def memory_usage():
     memory_statistic = psutil.virtual_memory()
     return memory_statistic
+
 
 def memory_alerts(memory_statistic):
     if memory_statistic.percent >= 90:
@@ -87,12 +89,15 @@ def memory_alerts(memory_statistic):
         logging.info("Memory Usage Normal")
         print(Fore.GREEN + "Memory usage normal" + Style.RESET_ALL)
 
+
 # disk_usage and disk_alerts follows exact logic as cpu_precent and cpu_alerts
 # just with different components
 
+
 def disk_usage():
-    disk_statistic = psutil.disk_usage('/')
+    disk_statistic = psutil.disk_usage("/")
     return disk_statistic
+
 
 def disk_alerts(disk_statistic):
     if disk_statistic.percent >= 90:
@@ -111,33 +116,44 @@ def disk_alerts(disk_statistic):
         logging.info("Disk usage normal")
         print(Fore.GREEN + "Disk usage normal" + Style.RESET_ALL)
 
+
 # network_alert and network_usage follows exact logic as cpu_precent and cpu_alerts
 # just with different components
+
 
 def network_usage():
     network_statistics = psutil.net_io_counters()
     return network_statistics
+
 
 def network_alerts(network_statistics):
     if network_statistics.errin > 0 or network_statistics.errout > 0:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         alerts["red"].append(f"{now} - Network usage alert: RED")
         logging.error("NETWORK USAGE ALERT: PACKET ERRORS DETECTED")
-        print(Fore.RED + "NETWORK USAGE ALERT: PACKET ERRORS DETECTED" + Style.RESET_ALL)
+        print(
+            Fore.RED + "NETWORK USAGE ALERT: PACKET ERRORS DETECTED" + Style.RESET_ALL
+        )
 
     elif network_statistics.dropin > 0 or network_statistics.dropout > 0:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         alerts["yellow"].append(f"{now} - Network usage alert: YELLOW")
         logging.warning("Network USAGE ALERT: DROPPED PACKAGES DETECTED")
-        print(Fore.YELLOW + "Network USAGE ALERT: DROPPED PACKAGES DETECTED" + Style.RESET_ALL)
+        print(
+            Fore.YELLOW
+            + "Network USAGE ALERT: DROPPED PACKAGES DETECTED"
+            + Style.RESET_ALL
+        )
     else:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         alerts["green"].append(f"{now} - Network usage normal")
         logging.info("Network USAGE NORMAL")
         print(Fore.GREEN + "Network USAGE NORMAL" + Style.RESET_ALL)
 
+
 # initilization- Function initilization is meant to run ONCE in the life of Securox primary
 # to set up Securox file system with the proper file path for proper logging
+
 
 def initialization():
     components = ["cpu", "memory", "disk", "network"]
@@ -148,8 +164,10 @@ def initialization():
             path = f"Securox/logs/{component}/{severity}"
             os.makedirs(path, exist_ok=True)
 
+
 # filealerts- function filealerts provides a way for the program to store saved memory during
 # a security monitering session into the appropriate file path based on component and severity
+
 
 def filealerts(component_name):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
@@ -174,55 +192,6 @@ def filealerts(component_name):
                     alerts["green"].clear()
 
 
-# VERSION 1 - SECUROX ONLY SHOWS STATS - NO LIVE UPDATE
-#def main():
-#    cpu_statistics = cpu_percent()
-#    print(f"CPU USAGE:  {cpu_statistics}%")
-#    memory_statistics = memory_usage()
-#    print(f"MEMORY USAGE:  {memory_statistics.percent}%")
-#    disk_statistics = disk_usage()
-#    print(f"DISK USAGE:  {disk_statistics.percent}%")
-#    network_statistics = network_usage()
-#    print(f"BYTES SENT FROM DEVICE:  {network_statistics.bytes_sent}")
-#    print(f"BYTES RECEIVED ON DEVICE:  {network_statistics.bytes_recv}")
-#    print(f"PACKETS SENT FROM DEVICE:  {network_statistics.packets_sent}")
-#    print(f"PACKETS RECEIVED ON DEVICE:  {network_statistics.packets_recv}")
-#    print(f"NUMBER OF INCOMING PACKETS WITH ERRORS:  {network_statistics.errin}")
-#    print(f"NUMBER OF OUTGOING PACKETS WITH ERRORS:  {network_statistics.errout}")
-#    print(f"INCOMING PACKAGES DROPPED:  {network_statistics.dropin}")
-#    print(f"OUTGOING PACKAGES DROPPED:  {network_statistics.dropout}")
-
-# VERSION TWO - SECUROX DOES LIVE UPDATE NOW
-#def main():
-#    try:
-#       while True:
-#            os.system("clear" if os.name == "nt" else "clear")
-
-#            cpu_statistics = cpu_percent()
-#            print(f"CPU USAGE:  {cpu_statistics}%")
-#            cpu_alerts(cpu_statistics)
-
-#            memory_statistics = memory_usage()
-#            print(f"Memory USAGE:  {memory_statistics.percent}%")
-#            memory_alerts(memory_statistics)
-
-#            disk_statistic = disk_usage()
-#            print(f"Disk USAGE:  {disk_statistic.percent}%")
-#            disk_alerts(disk_statistic)
-
-#            network_statistics = network_usage()
-#            print(f"BYTES SENT FROM DEVICE:  {network_statistics.bytes_sent}")
-#            print(f"BYTES RECEIVED ON DEVICE:  {network_statistics.bytes_recv}")
-#            print(f"PACKETS SENT FROM DEVICE:  {network_statistics.packets_sent}")
-#            print(f"PACKETS RECEIVED ON DEVICE:  {network_statistics.packets_recv}")
-#            print(f"NUMBER OF INCOMING PACKETS WITH ERRORS:  {network_statistics.errin}")
-#            print(f"NUMBER OF OUTGOING PACKETS WITH ERRORS:  {network_statistics.errout}")
-#            print(f"INCOMING PACKAGES DROPPED:  {network_statistics.dropin}")
-#            print(f"OUTGOING PACKAGES DROPPED:  {network_statistics.dropout}")
-#            network_alerts(network_statistics)
-
-#            time.sleep(1)
-
 def main():
     initialization()
     # VERSION 3: main UI WITH LIVE UPDATE --> what the person interacts with
@@ -237,7 +206,7 @@ def main():
         print("THANK YOU FOR USING SECUROX")
 
         choice = input("Enter your choice (1-6): ")
-# Options and their outputs based on what number the person chooses
+        # Options and their outputs based on what number the person chooses
 
         if choice == "1":
             cpu_data()
@@ -250,10 +219,13 @@ def main():
         elif choice == "5":
             all_data()
         elif choice == "6":
-            print("Thank you for using Securox! - refer to /logs in /Securox for system issues")
+            print(
+                "Thank you for using Securox! - refer to /logs in /Securox for system issues"
+            )
             break
         else:
             print("Error - Please try again")
+
 
 def cpu_data():
     # cpu_data -- This function displays the cpu precent every one second
@@ -270,6 +242,7 @@ def cpu_data():
         filealerts("cpu")
         print("Saved Log Report --> Returning to main menu")
 
+
 def memory_data():
     # memory_data -- This function displays the memory precent every one second
     # until ctrl + c is pressed
@@ -284,6 +257,7 @@ def memory_data():
     except KeyboardInterrupt:
         filealerts("memory")
         print("Saved Log Report --> Returning to main menu")
+
 
 def disk_data():
     # disk_data -- This function displays the precent of disk used every one second
@@ -300,6 +274,7 @@ def disk_data():
         filealerts("disk")
         print("Saved Log Report --> Returning to main menu")
 
+
 def network_data():
     # network_data -- This function unlike the other shows details on bytes and packets of a system
     # until ctrl + c is pressed
@@ -311,7 +286,9 @@ def network_data():
             print(f"PACKETS SENT FROM DEVICE:  {network_statistic.packets_sent}")
             print(f"PACKETS RECEIVED ON DEVICE:  {network_statistic.packets_recv}")
             print(f"NUMBER OF INCOMING PACKETS WITH ERRORS:  {network_statistic.errin}")
-            print(f"NUMBER OF OUTGOING PACKETS WITH ERRORS:  {network_statistic.errout}")
+            print(
+                f"NUMBER OF OUTGOING PACKETS WITH ERRORS:  {network_statistic.errout}"
+            )
             print(f"INCOMING PACKAGES DROPPED:  {network_statistic.dropin}")
             print(f"OUTGOING PACKAGES DROPPED:  {network_statistic.dropout}")
             network_alerts(network_statistic)
@@ -322,45 +299,49 @@ def network_data():
         filealerts("network")
         print("Saved Log Report --> Returning to main menu")
 
+
 def all_data():
     # all_data -- This function displays everything (cpu,memory,disk, network) every one second
     # until ctrl + c is pressed
-        try:
-            while True:
-                cpu_statistics = cpu_percent()
-                print(f"CPU USAGE:  {cpu_statistics}%")
-                cpu_alerts(cpu_statistics)
+    try:
+        while True:
+            cpu_statistics = cpu_percent()
+            print(f"CPU USAGE:  {cpu_statistics}%")
+            cpu_alerts(cpu_statistics)
 
-                memory_statistics = memory_usage()
-                print(f"Memory USAGE:  {memory_statistics.percent}%")
-                memory_alerts(memory_statistics)
+            memory_statistics = memory_usage()
+            print(f"Memory USAGE:  {memory_statistics.percent}%")
+            memory_alerts(memory_statistics)
 
-                disk_statistic = disk_usage()
-                print(f"Disk USAGE:  {disk_statistic.percent}%")
-                disk_alerts(disk_statistic)
+            disk_statistic = disk_usage()
+            print(f"Disk USAGE:  {disk_statistic.percent}%")
+            disk_alerts(disk_statistic)
 
-                network_statistics = network_usage()
-                print(f"BYTES SENT FROM DEVICE:  {network_statistics.bytes_sent}")
-                print(f"BYTES RECEIVED ON DEVICE:  {network_statistics.bytes_recv}")
-                print(f"PACKETS SENT FROM DEVICE:  {network_statistics.packets_sent}")
-                print(f"PACKETS RECEIVED ON DEVICE:  {network_statistics.packets_recv}")
-                print(f"NUMBER OF INCOMING PACKETS WITH ERRORS:  {network_statistics.errin}")
-                print(f"NUMBER OF OUTGOING PACKETS WITH ERRORS:  {network_statistics.errout}")
-                print(f"INCOMING PACKAGES DROPPED:  {network_statistics.dropin}")
-                print(f"OUTGOING PACKAGES DROPPED:  {network_statistics.dropout}")
-                network_alerts(network_statistics)
-                time.sleep(1)
-                print("Press Ctrl + C to exit to main menu", flush=True)
+            network_statistics = network_usage()
+            print(f"BYTES SENT FROM DEVICE:  {network_statistics.bytes_sent}")
+            print(f"BYTES RECEIVED ON DEVICE:  {network_statistics.bytes_recv}")
+            print(f"PACKETS SENT FROM DEVICE:  {network_statistics.packets_sent}")
+            print(f"PACKETS RECEIVED ON DEVICE:  {network_statistics.packets_recv}")
+            print(
+                f"NUMBER OF INCOMING PACKETS WITH ERRORS:  {network_statistics.errin}"
+            )
+            print(
+                f"NUMBER OF OUTGOING PACKETS WITH ERRORS:  {network_statistics.errout}"
+            )
+            print(f"INCOMING PACKAGES DROPPED:  {network_statistics.dropin}")
+            print(f"OUTGOING PACKAGES DROPPED:  {network_statistics.dropout}")
+            network_alerts(network_statistics)
+            time.sleep(1)
+            print("Press Ctrl + C to exit to main menu", flush=True)
 
+    except KeyboardInterrupt:
+        filealerts("cpu")
+        filealerts("memory")
+        filealerts("disk")
+        filealerts("network")
+        print("Saved Log Report --> Returning to main menu")
 
-        except KeyboardInterrupt:
-            filealerts("cpu")
-            filealerts("memory")
-            filealerts("disk")
-            filealerts("network")
-            print("Saved Log Report --> Returning to main menu")
 
 # ONLY run the main function if Securox.py is being directly run on
 if __name__ == "__main__":
     main()
-
