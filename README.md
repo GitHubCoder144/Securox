@@ -1,6 +1,6 @@
 # Securox
 
-Securox is a terminal-based, lightweight system-monitering and logging tool for macOS. 
+Securox is a terminal-based, lightweight system-monitering and logging tool for macOS and Linux. 
   1. Brings Real Time Data for CPU, Network, Memory, and Disk.
   2. catagorizes alerts by severity (Red (>90%), Orange (60%-90%), and Green (<60%)) for reference.
   3. Saves Detailed Monitering Alerts where users can see past Securox Runs.
