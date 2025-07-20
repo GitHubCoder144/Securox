@@ -1,6 +1,6 @@
 # Securox
 
-Securox is a terminal-based, lightweight system-monitering and logging tool for macOS and Linux. 
+Securox is a terminal-based, lightweight system-monitering and logging tool for macOS, Linux, BSD. 
   1. Brings Real Time Data for CPU, Network, Memory, and Disk.
   2. catagorizes alerts by severity (Red (>90%), Orange (60%-90%), and Green (<60%)) for reference.
   3. Saves Detailed Monitering Alerts where users can see past Securox Runs.
@@ -30,10 +30,18 @@ python3 Securox_macOS.py
 ```
 
 ```python
-# for linux
+# for linux and BSD
 python Securox_Linux.py
 # or if in python 3
-python3 Securox.Linux.py
+python3 Securox_Linux.py
+```
+
+## Update Securox
+
+```bash
+# To Update Securox
+cd Securox
+git pull origin main
 ```
 
 ## Contributing
