@@ -23,9 +23,17 @@ cd Securox
 ## Usage
 
 ```python
-python Securox.py
+# for macOS
+python Securox_macOS.py
 # or if on Python 3
-python3 Securox.py
+python3 Securox_macOS.py
+```
+
+```python
+# for linux
+python Securox_Linux.py
+# or if in python 3
+python3 Securox.Linux.py
 ```
 
 ## Contributing
