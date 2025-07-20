@@ -33,7 +33,7 @@ python3 Securox_macOS.py
 # for linux
 python Securox_Linux.py
 # or if in python 3
-python3 Securox.Linux.py
+python3 Securox_Linux.py
 ```
 
 ## Contributing
