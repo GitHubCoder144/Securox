@@ -342,6 +342,6 @@ def all_data():
         print("Saved Log Report --> Returning to main menu")
 
 
-# ONLY run the main function if Securox.py is being directly run on
+# ONLY run the main function if Securox_macOS.py is being directly run on
 if __name__ == "__main__":
     main()

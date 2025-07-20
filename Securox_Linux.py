@@ -15,6 +15,7 @@ from colorama import Fore, Style, init  # to color alerts for categorization
 
 # -------------------------------
 
+# Linux - Helps Securox decide where to store logging info for computers with/without Desktop
 def log_base_path ():
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     if os.path.exists(desktop):
@@ -201,6 +202,7 @@ def filealerts(component_name):
 
 def main():
     initialization()
+    # Linux - Helps Securox Determine which Operating system and release its currently running on
     print(f"Running Securox On: {platform.system()} ({platform.release()})")
     # VERSION 3: main UI WITH LIVE UPDATE --> what the person interacts with
     print("================SECUROX MACOS MONITER/LOGGER================")
