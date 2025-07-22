@@ -205,7 +205,7 @@ def main():
     # Linux - Helps Securox Determine which Operating system and release its currently running on
     print(f"Running Securox On: {platform.system()} ({platform.release()})")
     # VERSION 3: main UI WITH LIVE UPDATE --> what the person interacts with
-    print("================SECUROX MACOS MONITER/LOGGER================")
+    print("================SECUROX Linux/BSD MONITER/LOGGER================")
     while True:
         print("1. Monitor CPU Only")
         print("2. Monitor Memory Usage")
